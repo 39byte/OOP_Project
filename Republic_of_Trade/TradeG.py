@@ -1,24 +1,27 @@
 from CL_Country import Korea, America
+from Fun_Selling import *
 
 korea = Korea(1, 3)
 america = America(3, 5)
-print(america)
-print('\n')
 
-print(korea)
-print(america)
+america.Status
+korea.Status
 
+# 게임 실행 이후
 Year = 1
 while Year < 100:
     act = input("무엇을 하시겠습니까?\n")
     if act == "sell":
-        resource = input("무엇을 판매하시겠습니까?\n")
-        amount, price = map(int, input("판매 개수, 판매 단가를 적어주세요.\n").replace(" ", "").split(','))
-        korea.Sell(america, resource, amount, price)
-        
-        print()
+        country = input("어느 나라에 판매하시겠습니까?\n")
 
-    elif act == "종료":
+        if country == 'america': Selling(korea, america)
+        else: print("알맞은 국가명을 기입하세요.")
+
+    elif act == "buy":
+        country = input("어느 나라에서 구매하시겠습니까?\n")
+        pass
+        
+    elif act == "quit":
         break
     Year += 1
 
