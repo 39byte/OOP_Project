@@ -5,10 +5,8 @@ from FC_Grid import draw_grid_and_axes  # 그리드 함수를 임포트
 from CL_Logo import Logo
 
 # 화면 옵션 설정
-WHITE = (255,255,255) 
 WINDOW_W = 920; WINDOW_H = 680
 FPS = 60
-
 GRID_SIZE = 50  
 
 pygame.init()
@@ -16,6 +14,10 @@ debug_font = pygame.font.SysFont('Arial', 14)
 
 window = pygame.display.set_mode((WINDOW_W, WINDOW_H))
 clock = pygame.time.Clock()
+
+background_image = pygame.image.load('Rush_Hour_Chef/Assets/Wallpaper.png').convert()
+background_image = pygame.transform.scale(background_image, (WINDOW_W, WINDOW_H))
+
 
 easy_button = Easy_Button(window, (WINDOW_W // 2, 400), 200) # 이지 버튼 객체 생성
 normal_button = Normal_Button(window, (WINDOW_W // 2, 500), 200) # 노말 버튼 객체 생성
@@ -41,7 +43,7 @@ while running:
         hard_button.handleEvent(event)
 
     # 화면 갱신
-    window.fill(WHITE) 
+    window.blit(background_image, (0, 0)) 
 
     if show_grid: 
         draw_grid_and_axes(window, GRID_SIZE, WINDOW_W, WINDOW_H, debug_font)
