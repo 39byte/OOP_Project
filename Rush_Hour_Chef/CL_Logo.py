@@ -1,9 +1,11 @@
 import pygame
+import webbrowser
 
 class Logo():
-    def __init__(self, window, loc, scale):
+    def __init__(self, window, loc, scale, url):
         self.window = window
         self.loc = loc
+        self.url = url
 
         self.surface = pygame.image.load('Rush_Hour_Chef/Assets/Logo.png')
 
@@ -28,9 +30,18 @@ class Logo():
         # 위치 설정
         self.rect.center = self.loc
 
-        desired_hitbox_height = 100 
-        shrink_amount_y = desired_hitbox_height - self.rect.height
-        self.rect = self.rect.inflate(0, shrink_amount_y)
+    def handleEvent(self, event):
+        if not hasattr(event, 'pos'):
+            return False
+        
+        coverOX = self.rect.collidepoint(event.pos)
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            if coverOX:
+                webbrowser.open(self.url)
+                return True 
+
+        return False
 
     def draw(self):
         self.window.blit(self.surface, self.rect)
