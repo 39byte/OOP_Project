@@ -2,6 +2,7 @@
 import pygame
 from CL_Difficulty_Button import *
 from FC_Grid import draw_grid_and_axes  # 그리드 함수를 임포트
+from CL_Logo import Logo
 
 # 화면 옵션 설정
 WHITE = (255,255,255) 
@@ -15,10 +16,12 @@ debug_font = pygame.font.SysFont('Arial', 14)
 
 window = pygame.display.set_mode((WINDOW_W, WINDOW_H))
 clock = pygame.time.Clock()
-easy_button = Easy_Button(window, (WINDOW_W // 2, 350), 200) # 이지 버튼 객체 생성
-normal_button = Normal_Button(window, (WINDOW_W // 2, 450), 200) # 노말 버튼 객체 생성
-hard_button = Hard_Button(window, (WINDOW_W // 2, 550), 200) # 하드 버튼 객체 생성
 
+easy_button = Easy_Button(window, (WINDOW_W // 2, 400), 200) # 이지 버튼 객체 생성
+normal_button = Normal_Button(window, (WINDOW_W // 2, 500), 200) # 노말 버튼 객체 생성
+hard_button = Hard_Button(window, (WINDOW_W // 2, 600), 200) # 하드 버튼 객체 생성
+
+logo = Logo(window, (WINDOW_W // 2, 100), 400)
 
 show_grid = False 
 
@@ -46,6 +49,7 @@ while running:
     easy_button.draw()
     normal_button.draw()
     hard_button.draw()
+    logo.draw()
     
     pygame.display.update()
     clock.tick(FPS)
