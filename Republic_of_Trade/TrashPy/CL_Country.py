@@ -71,3 +71,7 @@ class Korea(Country):
 class America(Country):
     def __init__(self, money, wood):
         super().__init__(money, wood)
+
+class Saudi(Country):
+    def __init__(self, money, wood):
+        super().__init__(money, wood)
