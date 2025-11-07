@@ -44,3 +44,26 @@ OOP(객체지향 프로그래밍) 4대 개념을 적용하여 Pygame으로 개�
     * `add_overcook()` 메서드 내부에서만 횟수를 증가시키며, 5가 되는지 **검사(패배 처리)**합니다.
 
 ## 3. 📂 프로젝트 구조
+rush_hour_chef/ ├── assets/ │ ├── images/ │ │ ├── truck.png │ │ ├── grill.png │ │ ├── bun.png │ │ ├── patty_raw.png │ │ ├── patty_cooked.png │ │ ├── patty_overcooked.png │ │ ├── cheese.png │ │ ├── lettuce.png │ │ ├── customer_normal.png │ │ ├── customer_vip.png │ │ └── button_cook.png │ ├── sounds/ │ │ ├── grill_sizzle.wav │ │ ├── order_complete.wav │ │ ├── overcook_fail.wav │ │ └── background_music.mp3 │ └── fonts/ │ └── NotoSansKR-Bold.ttf │ ├── src/ │ ├── components/ # OOP 9강의 UI/객체 클래스 │ │ ├── init.py │ │ ├── button.py # SimpleButton 클래스 (9강) │ │ ├── text.py # SimpleText 클래스 (9강) │ │ │ ├── game_objects/ # 게임 핵심 OOP 클래스 │ │ ├── init.py │ │ ├── abc_base.py # 추상 클래스 (MenuItem, Customer, CookingStation) │ │ ├── truck.py # FoodTruck 클래스 (캡슐화의 핵심) │ │ ├── menu_items.py # Hamburger, Cheeseburger 클래스 (상속) │ │ ├── customers.py # NormalCustomer, VIPCustomer 등 (다형성) │ │ └── stations.py # GrillStation, FryerStation 등 (추상화/상속) │ │ │ ├── config.py # 설정 파일 (WINDOW_WIDTH, FPS, 색상 등) │ └── main.py # 메인 게임 루프 (클라이언트 프로그램) │ ├── requirements.txt # 필요한 라이브러리 목록 └── README.md # 현재 파일
+# 4. ⚙️ 설치 및 환경 설정
+
+본 프로젝트는 Python 3.10 이상 및 Pygame 2.x 버전에서 개발되었습니다.
+
+1.  **가상 환경 생성 (권장):**
+    ```bash
+    python -m venv venv
+    .\venv\Scripts\activate
+    ```
+
+2.  **필요한 라이브러리 설치:**
+    ```bash
+    pip install pygame
+    ```
+    (또는 `requirements.txt`가 있을 경우: `pip install -r requirements.txt`)
+
+## 5. 🚀 실행 방법
+
+프로젝트의 루트 디렉터리에서 `src/main.py` 파일을 실행합니다.
+
+```bash
+python src/main.py
