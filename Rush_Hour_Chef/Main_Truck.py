@@ -1,0 +1,53 @@
+# 모든 것을 실행하는 메인 파일 (중앙통제소)
+import pygame
+from CL_Difficulty_Button import *
+from FC_Grid import draw_grid_and_axes  # 그리드 함수를 임포트
+
+# 화면 옵션 설정
+WHITE = (255,255,255) 
+WINDOW_W = 920; WINDOW_H = 680
+FPS = 60
+
+GRID_SIZE = 50  
+
+pygame.init()
+debug_font = pygame.font.SysFont('Arial', 14) 
+
+window = pygame.display.set_mode((WINDOW_W, WINDOW_H))
+clock = pygame.time.Clock()
+easy_button = Easy_Button(window, (WINDOW_W // 2, 350), 200) # 이지 버튼 객체 생성
+normal_button = Normal_Button(window, (WINDOW_W // 2, 450), 200) # 노말 버튼 객체 생성
+hard_button = Hard_Button(window, (WINDOW_W // 2, 550), 200) # 하드 버튼 객체 생성
+
+
+show_grid = False 
+
+# ========== 실행 코드 ==========
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_g: 
+                show_grid = not show_grid 
+
+        easy_button.handleEvent(event)
+        normal_button.handleEvent(event)
+        hard_button.handleEvent(event)
+
+    # 화면 갱신
+    window.fill(WHITE) 
+
+    if show_grid: 
+        draw_grid_and_axes(window, GRID_SIZE, WINDOW_W, WINDOW_H, debug_font)
+
+    easy_button.draw()
+    normal_button.draw()
+    hard_button.draw()
+    
+    pygame.display.update()
+    clock.tick(FPS)
+
+pygame.quit()

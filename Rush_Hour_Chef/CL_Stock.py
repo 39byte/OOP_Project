@@ -1,4 +1,4 @@
-# 푸드트럭 재고 관리 클래스
+# 푸드트럭 재고 관리 시스템 클래스
 
 class Stock():
     def __init__(self, money=10_000, Meat=10, Veg=10, Cheese=10):
