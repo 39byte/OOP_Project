@@ -2,47 +2,35 @@
 
 import pygame
 from abc import ABC
+from CL_Base import Base
 
-class Button(ABC):
+class Button(Base):
     state_normal = 'normal'
     state_hover = 'hover'
     state_active = 'active'
 
     def __init__(self, window, loc, scale):
-        self.window = window
-        self.loc = loc
+        # 자식 클래스(Easy, Normal, Hard)가 surfaceUp/Down을 설정한 상태
+        self.surface = pygame.image.load('Rush_Hour_Chef/Assets/EasyUp.png')
+        
+        # 부모 클래스 __init__ 호출 (surfaceUp 크기 조절, rect 생성)
+        super().__init__(window, loc, scale)
 
-        original_width = self.surfaceUp.get_width()
-        original_height = self.surfaceUp.get_height()
+        # surfaceUp, Down 이미지 크기 스케일에 맞춰 조정
+        self.surfaceUp = pygame.transform.smoothscale(self.surfaceUp, self.rect.size)
+        self.surfaceDown = pygame.transform.smoothscale(self.surfaceDown, self.rect.size)
 
-        new_size = None 
-
-        if isinstance(scale, int):
-            new_width = scale
-            aspect_ratio = original_height / original_width
-            new_height = int(new_width * aspect_ratio)
-            new_size = (new_width, new_height)
-        elif isinstance(scale, tuple):
-            new_size = scale
-
-        if new_size is not None:
-            self.surfaceUp = pygame.transform.smoothscale(self.surfaceUp, new_size)
-            self.surfaceDown = pygame.transform.smoothscale(self.surfaceDown, new_size)
-
-        # 히트박스 설정
-        self.rect = self.surfaceUp.get_rect()
-        # 위치 설정
-        self.rect.center = self.loc
-
+        # 히트박스 확장 로직 (기존 유지)
         desired_hitbox_height = 100 
         shrink_amount_y = desired_hitbox_height - self.rect.height
         self.rect = self.rect.inflate(0, shrink_amount_y)
 
         # 버튼의 상태를 노말 상태로 초기화
         self.state = Button.state_normal
+        self.rect.center = self.loc
 
     def handleEvent(self, event):
-
+        # (이하 로직은 기존과 동일)
         if not hasattr(event, 'pos'):
             return False
         

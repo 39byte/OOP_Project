@@ -1,8 +1,7 @@
 # 모든 것을 실행하는 메인 파일 (중앙통제소)
 import pygame
-from CL_Difficulty_Button import *
-from FC_Grid import draw_grid_and_axes  # 그리드 함수를 임포트
-from CL_Logo import Logo
+from FC_Grid import DebugGrid
+from CL_Kitchen_Interface import *
 
 # 화면 옵션 설정
 WINDOW_W = 1080; WINDOW_H = 680
@@ -10,23 +9,30 @@ FPS = 60
 GRID_SIZE = 50  
 
 pygame.init()
+# 폰트 설정
 debug_font = pygame.font.SysFont('Arial', 14) 
 
 window = pygame.display.set_mode((WINDOW_W, WINDOW_H))
 clock = pygame.time.Clock()
 
-background_image = pygame.image.load('Rush_Hour_Chef/Assets/Wallpaper.png').convert()
+# 배경 이미지 불러오고 창 크기로 변환
+background_image = pygame.image.load('Rush_Hour_Chef/Assets/Truck_kitchen/BasyWall.png').convert()
 background_image = pygame.transform.scale(background_image, (WINDOW_W, WINDOW_H))
 
+# 객체화
+debug_grid = DebugGrid(window, GRID_SIZE, WINDOW_W, WINDOW_H, debug_font)       # 그리드
+truck_floor = Truck_Floor(window, (50, 300), (750, 350))
+dash_board = DashBoard(window, (1050, 300), (225, 350))     # topright가 기준
+kitchen = Kitchen(window, (75, 325), (525, 150))
+grill = Grill(window, (75, 325), (325, 150))
+timer = Timer(window, (1050, 50), (225, 100))       # topright
 
-easy_button = Easy_Button(window, (WINDOW_W // 2, 400), 200) # 이지 버튼 객체 생성
-normal_button = Normal_Button(window, (WINDOW_W // 2, 500), 200) # 노말 버튼 객체 생성
-hard_button = Hard_Button(window, (WINDOW_W // 2, 600), 200) # 하드 버튼 객체 생성
+sit_1 = Customer_Sit(window, (700, 200), (50,50))
+sit_2 = Customer_Sit(window, (500, 200), (50,50))
+sit_3 = Customer_Sit(window, (300, 200), (50,50))
+sit_4 = Customer_Sit(window, (100, 200), (50,50))
 
-logo_url = "https://github.com/39byte/OOP_Project/tree/master"
-logo = Logo(window, (WINDOW_W // 2, 180), 400, logo_url)
-
-show_grid = False 
+show_grid = True       # 그리드 기본 상태
 
 # ========== 실행 코드 ==========
 running = True
@@ -35,26 +41,25 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         
+        # G키 누르면 그리드 펼치기
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_g: 
                 show_grid = not show_grid 
 
-        easy_button.handleEvent(event)
-        normal_button.handleEvent(event)
-        hard_button.handleEvent(event)
-        logo.handleEvent(event)
-
     # 화면 갱신
     window.blit(background_image, (0, 0)) 
 
-    if show_grid: 
-        draw_grid_and_axes(window, GRID_SIZE, WINDOW_W, WINDOW_H, debug_font)
-
-    easy_button.draw()
-    normal_button.draw()
-    hard_button.draw()
-    logo.draw()
+    # 그리드 그리기
+    if show_grid: debug_grid.draw()
     
+    # 인터페이스 그리기
+    truck_floor.draw()
+    dash_board.draw()
+    kitchen.draw()
+    grill.draw()
+    timer.draw()
+    sit_1.draw(); sit_2.draw(); sit_3.draw(); sit_4.draw()
+        
     pygame.display.update()
     clock.tick(FPS)
 
