@@ -42,18 +42,18 @@ class Button(ClickableBase): # (!!!) 상속 변경
 
 class Easy_Button(Button):
     def __init__(self, window, loc, scale, callBack=None):
-        self.surfaceUp = pygame.image.load(r'C:\Users\john9\Desktop\코딩\code\oop2\assets\EasyUp.png')
-        self.surfaceDown = pygame.image.load(r'C:\Users\john9\Desktop\코딩\code\oop2\assets\EasyDown.png')
+        self.surfaceUp = pygame.image.load('assets/EasyUp.png')
+        self.surfaceDown = pygame.image.load('assets/EasyDown.png')
         super().__init__(window, loc, scale, callBack=callBack)
 
 class Normal_Button(Button):
     def __init__(self, window, loc, scale, callBack=None):
-        self.surfaceUp = pygame.image.load(r'C:\Users\john9\Desktop\코딩\code\oop2\assets\NormalUp.png')
-        self.surfaceDown = pygame.image.load(r'C:\Users\john9\Desktop\코딩\code\oop2\assets\NormalDown.png')
+        self.surfaceUp = pygame.image.load('assets/NormalUp.png')
+        self.surfaceDown = pygame.image.load('assets/NormalDown.png')
         super().__init__(window, loc, scale, callBack=callBack)
 
 class Hard_Button(Button):
     def __init__(self, window, loc, scale, callBack=None):
-        self.surfaceUp = pygame.image.load(r'C:\Users\john9\Desktop\코딩\code\oop2\assets\HardUp.png')
-        self.surfaceDown = pygame.image.load(r'C:\Users\john9\Desktop\코딩\code\oop2\assets\HardDown.png')
+        self.surfaceUp = pygame.image.load('assets/HardUp.png')
+        self.surfaceDown = pygame.image.load('assets/HardDown.png')
         super().__init__(window, loc, scale, callBack=callBack)

@@ -7,7 +7,7 @@ class Logo(Base):  # (수정) Base 클래스 상속
         self.url = url
         
         # (수정) 부모 클래스의 __init__을 호출하기 전에 self.surface를 먼저 정의
-        self.surface = pygame.image.load(r'C:\Users\john9\Desktop\코딩\code\oop2\assets\Logo.png')
+        self.surface = pygame.image.load('assets/Logo.png')
 
         # (수정) 부모 __init__ 호출
         # align='center'를 전달하여 이미지를 loc 좌표 기준으로 중앙 정렬
