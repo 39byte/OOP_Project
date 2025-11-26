@@ -29,12 +29,11 @@ POPUP_DIM_COLOR = (0, 0, 0, 180)
 # 재료 1개당 비용
 STOCK_PURCHASE_COST = 1
 
-# --- 폰트 경로 (한글 깨짐 해결) ---
+# 폰트 경로
 FONT_PATH = 'assets/fonts/NanumGothicBold.ttf' 
 
 # --- UI 위치 ---
-# 메인 화면 (손님 위치 하향 조정됨: y=140)
-CUSTOMER_SLOT_POS = [(100, 160), (250, 160), (400, 160), (550, 160)]
+CUSTOMER_SLOT_POS = [(100, 200), (250, 200), (400, 200), (550, 200)]
 TIME_UI_POS = (780, 20)
 DIFFICULTY_UI_POS = (780, 50)
 OVERCOOK_UI_POS = (780, 80)
