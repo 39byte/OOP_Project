@@ -1,4 +1,3 @@
-# game_objects.py
 import pygame
 import random
 from abc import ABC, abstractmethod
@@ -7,21 +6,27 @@ from ui_components import load_font
 from collections import Counter
 import time
 from copy import deepcopy
+from CL_Base import Base
+
 # --- 1 & 2. 추상화(Abstraction) 및 상속(Inheritance) ---
 class MenuItem(ABC):
-    # ... (이전과 동일) ...
     def __init__(self, name, price, recipe):
         self.name = name; self.price = price; self.recipe = recipe
     def get_price(self): return self.price
     @abstractmethod
     def get_recipe(self): pass
 
-class Customer(ABC):
-    # ... (이전과 동일) ...
-    def __init__(self, wait_time):
-        self.wait_time = wait_time; self.order_list = []; self.wait_timer = wait_time
-        self.font = load_font(18); self.face_color = (255, 220, 180)
-        self.patience_factor = 1.0  # (추가) 인내심 배율 (연예인 이벤트용)
+class Customer(Base):
+    """모든 손님의 공통 부모 클래스"""
+    def __init__(self, window, loc, wait_time, scale=80, align='center'):
+        # 1. Customer 고유 속성 초기화
+        self.wait_time = wait_time
+        self.wait_timer = wait_time
+        self.font = load_font(18)
+        self.patience_factor = 1.0
+        
+        # 2. 부모(Base) 초기화 호출 (이미지 처리, rect 생성)
+        super().__init__(window, loc, scale, align)
 
     @abstractmethod
     def order(self, menu_list): pass
@@ -31,21 +36,29 @@ class Customer(ABC):
     def set_patience_factor(self, factor):
         self.patience_factor = factor
 
-    def draw(self, screen, pos):
-        pygame.draw.circle(screen, self.face_color, pos, 30)
+    def draw(self):
+        super().draw() # Base의 draw (캐릭터 이미지)
+
+        # 주문 내역 텍스트
         order_counts = Counter(item.name for item in self.order_list)
         order_str = " / ".join([f"{name} x{count}" for name, count in order_counts.items()])
         order_text = self.font.render(order_str, True, BLACK)
-        order_rect = order_text.get_rect(center=(pos[0], pos[1] - 40))
-        screen.blit(order_text, order_rect)
+        order_rect = order_text.get_rect(centerx=self.rect.centerx, bottom=self.rect.top - 10)
+        self.window.blit(order_text, order_rect)
+
+        # 인내심 바
         wait_ratio = self.wait_timer / self.wait_time
-        bar_width = 80 * wait_ratio
+        bar_width = self.rect.width
         if bar_width > 0:
-            pygame.draw.rect(screen, (200,0,0), (pos[0]-40, pos[1] + 40, 80, 5))
-            pygame.draw.rect(screen, (0,200,0), (pos[0]-40, pos[1] + 40, bar_width, 5))
+            pygame.draw.rect(self.window, (200, 0, 0), (self.rect.x, self.rect.bottom + 10, bar_width, 10))
+            pygame.draw.rect(self.window, (0, 200, 0), (self.rect.x, self.rect.bottom + 10, bar_width * wait_ratio, 10))
+
     def update(self, dt):
         self.wait_timer -= (dt * self.patience_factor)
         return self.wait_timer > 0
+    
+    def handleEvent(self, event):
+        pass
 
 class Hamburger(MenuItem):
     def __init__(self):
@@ -56,13 +69,22 @@ class Cheeseburger(MenuItem):
         super().__init__(name="치즈버거", price=13, recipe=["빵", "양상추", "조리된 패티", "치즈", "빵"].copy())
     def get_recipe(self): return self.recipe
 
+# --- 자식 클래스들 (수정됨) ---
 class NormalCustomer(Customer):
+    def __init__(self, window, loc, wait_time):
+        self.surface = pygame.image.load('assets/Char1.png')
+        # 부모(Customer)의 __init__ 호출 -> Customer가 Base의 __init__ 호출
+        super().__init__(window, loc, wait_time, scale=80, align='center')
+        
     def order(self, menu_list):
         self.order_list = [deepcopy(random.choice(menu_list))]; return self.order_list
     def pay(self, total_price): return total_price
+
 class VIPCustomer(Customer): 
-    def __init__(self, wait_time):
-        super().__init__(wait_time); self.face_color = (255, 215, 0)
+    def __init__(self, window, loc, wait_time):
+        self.surface = pygame.image.load('assets/Char2.png')
+        super().__init__(window, loc, wait_time, scale=80, align='center')
+        
     def order(self, menu_list):
         count = random.randint(1, 2)
         self.order_list = [deepcopy(random.choice(menu_list)) for _ in range(count)]
@@ -70,40 +92,30 @@ class VIPCustomer(Customer):
     def pay(self, total_price):
         tip_multiplier = random.uniform(1.3, 2.0)
         final_price = int(total_price * tip_multiplier)
-        print(f"VIP 손님이 {tip_multiplier:.2f}배 팁을 주었습니다! (총 ${final_price})")
+        print(f"VIP 손님이 팁을 주었습니다! (총 ${final_price})")
         return final_price
-class PickyCustomer(Customer):
-    """
-    상속(Inheritance)을 이용한 새로운 손님.
-    기존 메뉴(햄버거/치즈버거)에 패티를 1장 더 추가해서 주문합니다.
-    """
-    def __init__(self, wait_time):
-        super().__init__(wait_time); self.face_color = (150, 150, 255) # 파란색 얼굴
 
-    def order(self, menu_list):
-        # (수정) deepcopy로 아이템 복제
-        item = deepcopy(random.choice(menu_list))
+class PickyCustomer(Customer):
+    def __init__(self, window, loc, wait_time):
+        self.surface = pygame.image.load('assets/Char1.png')
+        super().__init__(window, loc, wait_time, scale=80, align='center')
         
-        # 메서드 오버라이딩: 주문(recipe)을 수정합니다.
-        # 맨 위 빵("빵") 바로 아래에 "조리된 패티"를 추가
+    def order(self, menu_list):
+        item = deepcopy(random.choice(menu_list))
         try:
             item.recipe.insert(-1, "조리된 패티")
-            item.name += "+패티추가" # 이름 변경
-            item.price += 2 # 패티 추가 가격
+            item.name += "+패티추가"
+            item.price += 2
             print(f"까다로운 손님 주문: {item.name}")
-        except Exception as e:
-            print(f"패티 추가 중 오류: {e}") # 기본 아이템으로 대체
+        except Exception:
             item = deepcopy(random.choice(menu_list))
-
         self.order_list = [item]
         return self.order_list
-        
-    def pay(self, total_price):
-        return total_price # 팁은 없음
+    def pay(self, total_price): return total_price
+
 # --- 4. 캡슐화 (Encapsulation) ---
 class GrillStation:
-    # ... (이전과 동일) ...
-    STATE_IDLE = "그릴"
+    STATE_IDLE = "대기"
     STATE_COOKING = "조리중"
     STATE_OVERCOOKED = "오버쿡"
     STATE_BROKEN = "고장"
@@ -112,16 +124,24 @@ class GrillStation:
         self.state = self.STATE_IDLE; self.timer = 0.0; self.cook_time = 5.0 
         self.precision_window = 0.4; self.rect = pygame.Rect(pos[0], pos[1], 80, 80)
         self.font = load_font(16)
-        self.is_broken = False # (추가) 고장 상태 플래그
+        self.is_broken = False
+        
+        try:
+            self.image = pygame.image.load('assets/Grill.png').convert_alpha()
+            self.image = pygame.transform.scale(self.image, (80, 80))
+        except pygame.error:
+            print("그릴 이미지(assets/Grill.png)를 찾을 수 없어 기본 사각형을 사용합니다.")
+            self.image = None
+            
+        self.broken_overlay = pygame.Surface((80, 80), pygame.SRCALPHA)
+        self.broken_overlay.fill((200, 0, 0, 100)) 
 
-    # (추가) 이벤트용 메서드
     def break_grill(self):
         print(f"[그릴] 고장 발생!")
         self.is_broken = True
         self.state = self.STATE_BROKEN
         self.timer = 0.0
     
-    # (추가) 이벤트용 메서드
     def fix_grill(self):
         print(f"[그릴] 수리 완료!")
         self.is_broken = False
@@ -129,7 +149,7 @@ class GrillStation:
         self.timer = 0.0
 
     def start_cook(self, stock_manager):
-        if self.is_broken: # (추가) 고장 시 작동 불가
+        if self.is_broken: 
             print("[그릴] 고장나서 사용할 수 없습니다.")
             return False
         
@@ -147,9 +167,7 @@ class GrillStation:
                 print(f"[그릴] 패티가 탔습니다! ({self.timer:.2f}초)")
 
     def get_click_result(self, stock_manager):
-        if self.is_broken: # (추가) 고장 시 작동 불가
-            print("[그릴] 고장나서 사용할 수 없습니다.")
-            return "고장"
+        if self.is_broken: return "고장"
         
         if self.state == self.STATE_OVERCOOKED:
              print("[그릴] 클릭: 이미 탔습니다. (패널티)"); self.state = self.STATE_IDLE; self.timer = 0.0
@@ -165,54 +183,59 @@ class GrillStation:
             self.state = self.STATE_IDLE; self.timer = 0.0
             if stock_manager.add_penalty() == "GAME_OVER": return "게임오버"
             return "실패"
+
     def draw(self, screen):
-        # (***수정됨***) 그릴 버튼과 겹치지 않도록 타이머/상태 텍스트 위치 조정
-        pygame.draw.rect(screen, DARK_GRAY, self.rect)
+        if self.image:
+            screen.blit(self.image, self.rect)
+        else:
+            pygame.draw.rect(screen, DARK_GRAY, self.rect) 
+
         text_to_show = self.state
         text_color = WHITE
-        if self.state == self.STATE_BROKEN:
-            pygame.draw.rect(screen, (100, 0, 0), self.rect) # 어두운 빨간색
-            text_color = WHITE
-            text_to_show = self.state
         
-        # 2. 고장이 아닐 때 (기존 로직)
-        else:
-            pygame.draw.rect(screen, DARK_GRAY, self.rect)
+        if self.state == self.STATE_BROKEN:
+            screen.blit(self.broken_overlay, self.rect)
             text_to_show = self.state
-            text_color = WHITE
             
-            if self.state == self.STATE_COOKING:
-                text_to_show = f"{self.timer:.1f}초"
-                # 타이밍 바
-                bar_width = self.rect.width
-                cook_ratio = self.timer / self.cook_time
-                color = (0, 255 * (cook_ratio if cook_ratio < 1 else 1), 0)
-                if (self.cook_time - self.precision_window / 2) <= self.timer <= (self.cook_time + self.precision_window / 2):
-                    color = (255, 255, 0)
-                elif self.timer > (self.cook_time + self.precision_window / 2):
-                    color = RED; cook_ratio = 1.0; text_color = RED
-                pygame.draw.rect(screen, color, (self.rect.x, self.rect.bottom - 10, bar_width * min(cook_ratio, 1), 10))
-            
-            elif self.state == self.STATE_OVERCOOKED:
-                text_color = RED
-            
+        elif self.state == self.STATE_COOKING:
+            text_to_show = f"{self.timer:.1f}초"
+            bar_width = self.rect.width
+            cook_ratio = self.timer / self.cook_time
+            color = (0, 255 * (cook_ratio if cook_ratio < 1 else 1), 0)
+            if (self.cook_time - self.precision_window / 2) <= self.timer <= (self.cook_time + self.precision_window / 2):
+                color = (255, 255, 0)
+            elif self.timer > (self.cook_time + self.precision_window / 2):
+                color = RED; cook_ratio = 1.0; text_color = RED
+            pygame.draw.rect(screen, color, (self.rect.x, self.rect.bottom + 5, bar_width * min(cook_ratio, 1), 10))
+        
+        elif self.state == self.STATE_OVERCOOKED:
+            text_color = RED
+        
         text = self.font.render(text_to_show, True, text_color)
-        text_rect = text.get_rect(center=(self.rect.centerx, self.rect.centery - 10)) # 텍스트를 위로 올림
+        text_rect = text.get_rect(center=(self.rect.centerx, self.rect.centery - 10))
         screen.blit(text, text_rect)
 
 class FoodTruck:
-    """조립대 로직을 캡슐화 (팝업창 역할)"""
     def __init__(self, stock_manager):
         self.stock = stock_manager; self.assembly_station = []; self.current_order_recipe = []
         self.font = load_font(18); self.rect = pygame.Rect(POPUP_ASSEMBLY_POS[0], POPUP_ASSEMBLY_POS[1], 150, 200)
+        
+        self.images = {}
+        try:
+            self.images["빵_아래"] = pygame.transform.scale(pygame.image.load('assets/BreadDown.png'), (100, 30))
+            self.images["빵_위"] = pygame.transform.scale(pygame.image.load('assets/BreadUp.png'), (100, 40))
+            self.images["패티"] = pygame.transform.scale(pygame.image.load('assets/Patty.png'), (90, 25))
+            self.images["조리된 패티"] = self.images["패티"]
+            self.images["치즈"] = pygame.transform.scale(pygame.image.load('assets/Cheese.png'), (95, 10))
+            self.images["양상추"] = pygame.transform.scale(pygame.image.load('assets/Vegtable.png'), (95, 20))
+        except pygame.error: pass
 
     def set_new_order(self, recipe):
         self.assembly_station = []; self.current_order_recipe = recipe
         print(f"[주문] 새 주문 받음: {self.current_order_recipe}")
 
     def add_to_assembly(self, ingredient_name):
-        if ingredient_name == "패티":
-             ingredient_name = "조리된 패티"
+        if ingredient_name == "패티": ingredient_name = "조리된 패티"
         if not self.stock.use_ingredient(ingredient_name): 
             print(f"Error: {ingredient_name} 재고 부족!"); return "재고없음"
 
@@ -231,10 +254,28 @@ class FoodTruck:
         print("[조립] 조립대를 비우고 재료를 버립니다."); self.assembly_station = []
         
     def draw(self, screen):
-        pygame.draw.rect(screen, BROWN, self.rect)
-        y_stack = self.rect.bottom - 10
-        for item_name in reversed(self.assembly_station):
-             text = self.font.render(item_name, True, BLACK)
-             text_rect = text.get_rect(centerx=self.rect.centerx, bottom=y_stack)
-             screen.blit(text, text_rect)
-             y_stack -= 20
+        pygame.draw.rect(screen, BROWN, self.rect) 
+        
+        start_x = self.rect.centerx
+        current_y = self.rect.bottom - 20 
+        
+        for i, item_name in enumerate(self.assembly_station):
+            image_to_draw = None
+            
+            if item_name == "빵":
+                if i == len(self.current_order_recipe) - 1: 
+                    image_to_draw = self.images.get("빵_위")
+                else:
+                    image_to_draw = self.images.get("빵_아래")
+            else:
+                image_to_draw = self.images.get(item_name)
+            
+            if image_to_draw:
+                img_rect = image_to_draw.get_rect(midbottom=(start_x, current_y))
+                screen.blit(image_to_draw, img_rect)
+                current_y -= (img_rect.height * 0.7) 
+            else:
+                text = self.font.render(item_name, True, BLACK)
+                text_rect = text.get_rect(midbottom=(start_x, current_y))
+                screen.blit(text, text_rect)
+                current_y -= 20

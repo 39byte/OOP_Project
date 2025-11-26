@@ -1,36 +1,24 @@
 import pygame
 import webbrowser
+from CL_Base import Base
 
-class Logo():
+class Logo(Base):
     def __init__(self, window, loc, scale, url):
-        self.window = window
-        self.loc = loc
         self.url = url
+        
+        # 부모 클래스의 __init__을 호출하기 전에 self.surface를 먼저 정의
+        try:
+            self.surface = pygame.image.load('assets/Logo.png').convert_alpha()
+        except pygame.error:
+            print("로고 이미지(assets/Logo.png)를 찾을 수 없습니다.")
+            self.surface = pygame.Surface((200, 100))
+            self.surface.fill((0, 0, 255)) # 파란색 박스로 대체
 
-        self.surface = pygame.image.load(r'C:\HUFS_Project\RHC_Now\assets\Logo.png')
-
-        original_width = self.surface.get_width()
-        original_height = self.surface.get_height()
-
-        new_size = None 
-
-        if isinstance(scale, int):
-            new_width = scale
-            aspect_ratio = original_height / original_width
-            new_height = int(new_width * aspect_ratio)
-            new_size = (new_width, new_height)
-        elif isinstance(scale, tuple):
-            new_size = scale
-
-        if new_size is not None:
-            self.surface = pygame.transform.smoothscale(self.surface, new_size)
-
-        # 히트박스 설정
-        self.rect = self.surface.get_rect()
-        # 위치 설정
-        self.rect.center = self.loc
+        # 부모 __init__ 호출 (align='center'로 중앙 정렬)
+        super().__init__(window, loc, scale, align='center')
 
     def handleEvent(self, event):
+        """Base 클래스의 추상 메서드를 구현"""
         if not hasattr(event, 'pos'):
             return False
         
@@ -44,4 +32,5 @@ class Logo():
         return False
 
     def draw(self):
-        self.window.blit(self.surface, self.rect)
+        """Base 클래스의 추상 메서드를 구현"""
+        super().draw()
