@@ -2,6 +2,7 @@
 import pygame
 from abc import ABC, abstractmethod
 
+# 위치랑 크기 잡는 기능 클래스
 class Base(ABC):
     def __init__(self, window, loc, scale, align='topleft'): 
         self.window = window

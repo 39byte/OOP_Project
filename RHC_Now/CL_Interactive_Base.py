@@ -2,11 +2,8 @@ import pygame
 from abc import abstractmethod
 from CL_Base import Base
 
+# 클릭 여부 감지 기능 클래스
 class ClickableBase(Base):
-    """
-    Base를 상속받되, 'Normal/Hover/Active' 상태 관리가 추가된
-    모든 버튼류의 새로운 부모 클래스
-    """
     STATE_NORMAL = 'normal'
     STATE_HOVER = 'hover'
     STATE_ACTIVE = 'active'
@@ -17,11 +14,8 @@ class ClickableBase(Base):
         self.callBack = callBack
         self.state = self.STATE_NORMAL
 
+    # Overriding 통해 handleEvent 덮어쓰기
     def handleEvent(self, eventObj):
-        """
-        Base 클래스의 추상 메서드를 덮어쓰기(Override)하여
-        모든 클릭 가능 객체의 공통 이벤트 로직을 구현합니다.
-        """
         if eventObj.type not in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
             return False
         if not hasattr(eventObj, 'pos'): 
@@ -53,16 +47,10 @@ class ClickableBase(Base):
 
     @abstractmethod
     def _execute_callback(self):
-        """
-        콜백을 실행하는 방식이 자식마다 다름
-        (DifficultyButton: 인자 없음, BaseButton: self.text 인자 전달)
-        """
+        # 실행 기능은 자식 클래스에서 지정
         pass
 
     @abstractmethod
     def draw(self):
-        """
-        그리는 방식도 자식마다 다름 (이미지 vs 사각형)
-        따라서 자식이 무조건 덮어쓰도록 다시 추상 메서드로 지정
-        """
+        # 그리는 방식은 자식 클래스에서 지정
         pass

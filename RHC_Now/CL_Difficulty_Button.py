@@ -2,14 +2,17 @@
 import pygame
 from CL_Interactive_Base import ClickableBase 
 
+# 클릭했을 때 이미지 변경하는 기능 담당 클래스
 class Button(ClickableBase): 
     def __init__(self, window, loc, scale, callBack=None): 
         self.surface = self.surfaceUp
         super().__init__(window, loc, scale, align='center', callBack=callBack)
         self.surfaceDown = pygame.transform.smoothscale(self.surfaceDown, self.rect.size)
         
+        # 히트박스 최소치 보정
         desired_hitbox_height = 100 
         shrink_amount_y = desired_hitbox_height - self.rect.height
+        # 기준 위치대로 크기만 늘리고 줄이기
         self.rect = self.rect.inflate(0, shrink_amount_y)
 
     def _execute_callback(self):

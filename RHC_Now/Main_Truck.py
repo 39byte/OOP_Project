@@ -75,10 +75,10 @@ class GameClient:
 
     # --- UI 생성 함수들 ---
     def _setup_start_menu_ui(self):
-        self.start_menu_ui.append(Easy_Button(self.window, (WINDOW_WIDTH // 2, 380), 200, callBack=lambda: self.start_game('easy')))
-        self.start_menu_ui.append(Normal_Button(self.window, (WINDOW_WIDTH // 2, 480), 200, callBack=lambda: self.start_game('normal')))
-        self.start_menu_ui.append(Hard_Button(self.window, (WINDOW_WIDTH // 2, 580), 200, callBack=lambda: self.start_game('hard')))
-        self.start_menu_ui.append(Logo(self.window, (WINDOW_WIDTH // 2, 160), 400, "https://github.com/39byte/OOP_Project/tree/master"))
+        self.start_menu_ui.append(Easy_Button(self.window, (WINDOW_WIDTH // 2, 325), 200, callBack=lambda: self.start_game('easy')))
+        self.start_menu_ui.append(Normal_Button(self.window, (WINDOW_WIDTH // 2, 425), 200, callBack=lambda: self.start_game('normal')))
+        self.start_menu_ui.append(Hard_Button(self.window, (WINDOW_WIDTH // 2, 525), 200, callBack=lambda: self.start_game('hard')))
+        self.start_menu_ui.append(Logo(self.window, (WINDOW_WIDTH // 2, 150), 350, "https://github.com/39byte/OOP_Project/tree/master"))
     
     def _setup_playing_ui(self):
         self.playing_ui_elements = [] 
@@ -106,6 +106,9 @@ class GameClient:
         self.game_texts['assembly_label'] = SimpleText(self.window, (label_x, label_y), "조리하기", 24, BLACK, 'center')
 
         btn_x, btn_y = STOCK_BUTTONS_POS
+
+        # self.playing_ui_elements.append(ImageButton(self.window, (btn_x, btn_y - 50), 'assets/ButtonUp.png', 120, 120, callBack=self.cb_add_stock, callback_arg="빵 추가"))
+
         self.playing_ui_elements.append(BaseButton(self.window, (btn_x, btn_y + 0), "빵 추가", 20, 120, 40, callBack=self.cb_add_stock))
         self.playing_ui_elements.append(BaseButton(self.window, (btn_x, btn_y + 50), "치즈 추가", 20, 120, 40, callBack=self.cb_add_stock))
         self.playing_ui_elements.append(BaseButton(self.window, (btn_x, btn_y + 100), "양상추 추가", 20, 120, 40, callBack=self.cb_add_stock))
@@ -134,7 +137,6 @@ class GameClient:
         self.cooking_ui_elements.append(ImageButton(self.window, (x, y), 'assets/Cheese.png', *btn_size, callBack=self.cb_popup_add_ingredient, callback_arg="치즈"))
         self.popup_texts['치즈'] = SimpleText(self.window, (x + 80, y + 25), ": 0", 20, BLACK)
         
-        # [수정] 쓰레기통 위치 변경: 조립대(왼쪽) 아래로 이동
         trash_pos = (195, 360) 
         self.cooking_ui_elements.append(ImageButton(self.window, trash_pos, 'assets/Trash.png', 60, 60, callBack=self.cb_popup_trash))
         
