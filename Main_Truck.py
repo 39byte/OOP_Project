@@ -237,8 +237,10 @@ class GameClient:
                  print("서빙할 손님이 선택되지 않았습니다."); return
                  
             order_item_recipe = customer.order_list[0].get_recipe()
-
+            
+            # [검사] 현재 조립된 버거가 주문 레시피와 같은지 확인
             if self.food_truck.assembly_station == order_item_recipe:
+                # --- 성공 로직 (기존과 동일) ---
                 print("--- 버거 판매 성공! ---")
                 order_item = customer.order_list.pop(0) 
                 
@@ -260,8 +262,20 @@ class GameClient:
                 
                 self.food_truck.set_new_order([])
                 self.game_state = "PLAYING"
+            
+            # --- [수정된 부분] 실패 로직: 잘못된 버거 서빙 ---
             else:
-                print("주문과 다릅니다! 서빙할 수 없습니다."); return
+                print("잘못된 버거 서빙! (패널티 발생)")
+                
+                # 1. 아깝지만 잘못 만든 버거는 버립니다 (재료 낭비)
+                self.food_truck.clear_assembly() 
+                
+                # 2. 패널티 부여 (오버쿡 카운트 증가) 및 게임오버 체크
+                if self.player_stock.add_penalty() == "GAME_OVER":
+                    self.game_state = "GAME_OVER"
+                
+                # 3. 팝업을 닫지 않고(return) 다시 만들 기회를 줍니다.
+                return 
 
         elif action == "닫기":
             self.game_state = "PLAYING"
