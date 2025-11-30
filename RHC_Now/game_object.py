@@ -55,7 +55,7 @@ class Customer(Base):   # 손님들 공통 클래스
 
         # 주문 내역 텍스트 표시 기능
         order_counts = Counter(item.name for item in self.order_list)   # 주문 목록 개수 세기 (Count 모듈 사용)
-        order_str = " / ".join([f"{name} x{count}" for name, count in order_counts.items()])
+        order_str = " /\n ".join([f"{name} x{count}" for name, count in order_counts.items()])
         order_text = self.font.render(order_str, True, BLACK)
         # 그 텍스트 머리 위에 띄우기
         order_rect = order_text.get_rect(centerx=self.rect.centerx, bottom=self.rect.top - 10)
@@ -117,7 +117,7 @@ class PickyCustomer(Customer):
         item = deepcopy(random.choice(menu_list))   # 메뉴 선택
         try:    # 패티 아래에 패티 한 장 더 깔아달라고 부탁
             item.recipe.insert(-1, "조리된 패티")
-            item.name += "+패티추가"
+            item.name += "\n+패티추가"
             item.price += 2
             print(f"까다로운 손님 주문: {item.name}")
         except Exception:

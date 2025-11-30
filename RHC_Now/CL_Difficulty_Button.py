@@ -41,3 +41,31 @@ class Hard_Button(Button):
         self.surfaceUp = pygame.image.load('assets/HardUp.png')
         self.surfaceDown = pygame.image.load('assets/HardDown.png')
         super().__init__(window, loc, scale, callBack=callBack)
+
+class Click_Feedback_Image_Button(ClickableBase):
+    def __init__(self, window, loc, scale, path_Normal, path_active, path_hover, callBack=None, callback_arg=None):
+        self.surfaceUp = pygame.image.load(path_Normal)
+        self.surfaceDown = pygame.image.load(path_active)
+        self.surfaceHover = pygame.image.load(path_hover)
+        self.surface=self.surfaceUp
+
+        super().__init__(window, loc, scale, align='center', callBack=callBack)
+        self.surfaceDown = pygame.transform.smoothscale(self.surfaceDown, self.rect.size)
+        self.surfaceHover = pygame.transform.smoothscale(self.surfaceHover, self.rect.size)
+
+        self.callBack = callBack
+        self.callback_arg = callback_arg
+
+    def _execute_callback(self):
+        if self.callBack:   # 콜백 함수 인자 있으면 인자와 호출, 없으면 인자 없이 호출
+            if self.callback_arg: self.callBack(self.callback_arg)
+            else: self.callBack()
+
+    def draw(self):
+        if self.state == self.STATE_ACTIVE:
+            self.window.blit(self.surface, self.rect)
+        elif self.state == self.STATE_HOVER:
+            self.window.blit(self.surfaceHover, self.rect)
+
+        else:
+            self.window.blit(self.surfaceDown, self.rect)

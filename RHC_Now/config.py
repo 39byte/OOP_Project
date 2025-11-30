@@ -45,7 +45,7 @@ FONT_PATH = 'assets/fonts/NanumGothicBold.ttf'
 
 # --- UI 위치 ---
 # 손님 서있는 위치
-CUSTOMER_SLOT_POS = [(100, 200), (250, 200), (400, 200), (550, 200)]
+CUSTOMER_SLOT_POS = [(100, 225), (300, 225), (500, 225), (700, 225)]
 TIME_UI_POS = (780, 20)         # 남은 시간 표시 위치
 DIFFICULTY_UI_POS = (780, 50)   # 난이도 표시 위치
 OVERCOOK_UI_POS = (780, 80)     # 오버쿡 횟수 표시
@@ -54,7 +54,7 @@ OVERCOOK_UI_POS = (780, 80)     # 오버쿡 횟수 표시
 TRUCK_AREA_RECT = pygame.Rect(40, 300, 570, 280)                # 푸드트럭 영역
 GRILL_SLOT_POS = [(60, 360), (160, 360), (60, 460), (160, 460)] # 화로 위치
 ASSEMBLY_STATION_POS = (280, 350)   # 조립대 위치
-STOCK_BUTTONS_POS = (450, 350)      # 재료 보충 버튼 위치
+STOCK_BUTTONS_POS = (515, 350)      # 재료 보충 버튼 위치
 
 # 대시보드
 DASHBOARD_RECT = pygame.Rect(610, 300, 180, 280) # 대시보드 영역
@@ -65,5 +65,5 @@ DASHBOARD_STOCK_POS = (620, 370)    # 재고 목록 텍스트 시작 위치
 POPUP_RECT = pygame.Rect(100, 100, 600, 400)    # 조립 팝업 영역
 POPUP_ASSEMBLY_POS = (150, 150)     # 팝업 내 조립대 위치
 POPUP_INGREDIENT_POS = (450, 150)   # 팝업 내 재료 버튼들 위치
-POPUP_TRASH_POS = (195, 360)        # 쓰레기통 위치
-POPUP_CLOSE_POS = (680, 110)        # 닫기 버튼 위치
+POPUP_TRASH_POS = (195, 390)        # 쓰레기통 위치
+POPUP_CLOSE_POS = (550, 110)        # 닫기 버튼 위치

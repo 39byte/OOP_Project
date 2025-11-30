@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-from CL_Difficulty_Button import Easy_Button, Normal_Button, Hard_Button
+from CL_Difficulty_Button import Easy_Button, Normal_Button, Hard_Button, Click_Feedback_Image_Button
 from FC_Grid import draw_grid_and_axes
 from CL_Logo import Logo
 from CL_Stock import Stock
@@ -107,13 +107,11 @@ class GameClient:
 
         btn_x, btn_y = STOCK_BUTTONS_POS
 
-        # self.playing_ui_elements.append(ImageButton(self.window, (btn_x, btn_y - 50), 'assets/ButtonUp.png', 120, 120, callBack=self.cb_add_stock, callback_arg="빵 추가"))
-
-        self.playing_ui_elements.append(BaseButton(self.window, (btn_x, btn_y + 0), "빵 추가", 20, 120, 40, callBack=self.cb_add_stock))
-        self.playing_ui_elements.append(BaseButton(self.window, (btn_x, btn_y + 50), "치즈 추가", 20, 120, 40, callBack=self.cb_add_stock))
-        self.playing_ui_elements.append(BaseButton(self.window, (btn_x, btn_y + 100), "양상추 추가", 20, 120, 40, callBack=self.cb_add_stock))
-        self.playing_ui_elements.append(BaseButton(self.window, (btn_x, btn_y + 150), "패티 추가", 20, 120, 40, callBack=self.cb_add_stock))       
-        
+        self.playing_ui_elements.append(Click_Feedback_Image_Button(self.window, (btn_x, btn_y + 0), 120, 'assets/Button/AddBreadUp.png', 'assets/Button/AddBreadDown.png', 'assets/Button/AddBreadHv.png', callBack=self.cb_add_stock, callback_arg="빵 추가"))
+        self.playing_ui_elements.append(Click_Feedback_Image_Button(self.window, (btn_x, btn_y + 50), 120, 'assets/Button/AddCheeseUp.png', 'assets/Button/AddCheeseDown.png', 'assets/Button/AddCheeseHv.png',callBack=self.cb_add_stock, callback_arg="치즈 추가"))
+        self.playing_ui_elements.append(Click_Feedback_Image_Button(self.window, (btn_x, btn_y + 100), 120, 'assets/Button/AddVegUp.png', 'assets/Button/AddVegDown.png', 'assets/Button/AddVegHv.png',callBack=self.cb_add_stock, callback_arg="양상추 추가"))
+        self.playing_ui_elements.append(Click_Feedback_Image_Button(self.window, (btn_x, btn_y + 150), 120, 'assets/Button/AddMeatUp.png', 'assets/Button/AddMeatDown.png', 'assets/Button/AddMeatHv.png',callBack=self.cb_add_stock, callback_arg="패티 추가"))
+                
         self.game_texts['recipe'] = SimpleText(self.window, (ASSEMBLY_STATION_POS[0] + 75, ASSEMBLY_STATION_POS[1] + 210), "주문 대기 중... (손님 클릭)", 18, BLACK, 'center')
         
     def _setup_cooking_ui(self):
@@ -153,6 +151,7 @@ class GameClient:
         
         if difficulty == 'easy':
             self.player_stock = Stock(money=100, patty=20, bun=20, lettuce=20, cheese=20)
+            
         elif difficulty == 'hard':
             self.player_stock = Stock(money=100, patty=10, bun=10, lettuce=10, cheese=10)
         else: # normal
